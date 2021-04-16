@@ -6,12 +6,13 @@ function BtnRender({ product, deleteProduct }) {
     const state = useContext(GlobalState);
     const [isAdmin] = state.userAPI.isAdmin;
     const addCart = state.userAPI.addCart;
+    const [isLogged] = state.userAPI.isLogged;
 
     return (
         <div className="row_btn">
             {
-                isAdmin ?
-                    <>
+                isAdmin ?   
+                <>
                         <Link id="btn_buy" to="#!" 
                         onClick={() => deleteProduct(product._id, product.images.public_id)}>
                             Delete
@@ -19,15 +20,26 @@ function BtnRender({ product, deleteProduct }) {
                         <Link id="btn_view" to={`/edit_product/${product._id}`}>
                             Edit
                         </Link>
+                </>
+                    : isLogged ?
+                    <>
+                        <Link id="btn_buy" to="/cart" onClick={() => addCart(product)}>
+                        Comprar
+                        </Link>
+                        <Link id="btn_view" to={`/detail/${product._id}`}>
+                        Ver
+                        </Link>
                     </>
-                    : <>
-                        <Link id="btn_buy" to="#!" onClick={() => addCart(product)}>
+                    :   
+                    <>
+                        <Link id="btn_buy" to="/login" onClick={() => addCart(product)}>
                             Comprar
                         </Link>
                         <Link id="btn_view" to={`/detail/${product._id}`}>
                             Ver
                         </Link>
                     </>
+                    
             }
         </div>
     )

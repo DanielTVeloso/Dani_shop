@@ -32,7 +32,7 @@ router.post('/upload', auth, authAdmin, (req, res) => {
 
         cloudinary.v2.uploader.upload(
             file.tempFilePath,
-            {folder: "test"}, 
+            {folder: "Dani_Shop"}, 
             function(err, result) {
                 if(err) {
                     console.log(err);

@@ -22,6 +22,7 @@ function CreateProduct() {
     const [categories] = state.categoriesAPI.categories;
     const [images, setImages] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState(false);
 
     const [isAdmin] = state.userAPI.isAdmin;
     const [token] = state.token;
@@ -32,6 +33,11 @@ function CreateProduct() {
     const [products] = state.productsAPI.products;
     const [onEdit, setOnEdit] = useState(false);
     const [callback, setCallback] = state.productsAPI.callback;
+    var formDataAux = new FormData();
+    var reader = new FileReader();
+    var imageAux = {
+        url: "url"
+      };
 
     useEffect(() => {
         if(param.id) {
@@ -51,6 +57,9 @@ function CreateProduct() {
 
     const handleUpload = async e => {
         e.preventDefault()
+        
+          
+       
         try {
             if(!isAdmin) {
                 return alert("Você não é administrador");
@@ -69,18 +78,23 @@ function CreateProduct() {
                 return alert("O formato do arquivo está incorreto");
             }
 
-            let formData = new FormData()
-            formData.append('file', file);
-
             setLoading(true);
-            const res = await axios.post('/api/upload', formData, {
-                headers: {
-                    'content-type' : 'multipart/form-data',
-                    Authorization: token 
-                }
-            });
+            formDataAux = new FormData();
+            formDataAux.append('file', file);
+            setFormData(formDataAux);
+            //const res = await axios.post('/api/upload', formData, {
+            //    headers: {
+            //        'content-type' : 'multipart/form-data',
+            //        Authorization: token 
+            //    }
+            //});
+            reader.onload = function(e) {
+                imageAux.url = e.target.result;
+                setImages(imageAux);
+            }
+            reader.readAsDataURL(e.target.files[0]); // convert to base64 string
+            
             setLoading(false);
-            setImages(res.data);
         } catch (err) {
             alert(err.response.data.msg)
         }
@@ -92,11 +106,11 @@ function CreateProduct() {
                 return alert("Você não é administrador");
             }
             setLoading(true);
-            await axios.post('/api/destroy', {public_id: images.public_id}, {
-                headers: {Authorization: token}
-            });
-            setLoading(false);
+            //await axios.post('/api/destroy', {public_id: images.public_id}, {
+            //    headers: {Authorization: token}
+            //});
             setImages(false);
+            setLoading(false);
             //window.location.reload(false);
             
         } catch (err) {
@@ -124,7 +138,15 @@ function CreateProduct() {
                     headers: {Authorization: token}
                 })
             }else{
-                await axios.post('/api/products', {...product, images}, {
+                const res = await axios.post('/api/upload', formData, {
+                headers: {
+                    'content-type' : 'multipart/form-data',
+                    Authorization: token 
+                }      
+            });
+                setImages(res.data);
+                alert("Produto criado com sucesso!");
+                await axios.post('/api/products', {...product, images:res.data}, {
                     headers: {Authorization: token}
                 })
             }      

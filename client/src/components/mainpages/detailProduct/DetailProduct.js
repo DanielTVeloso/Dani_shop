@@ -10,6 +10,8 @@ function DetailProduct() {
     const addCart = state.userAPI.addCart;
     const [detailProduct, setDetailProduct] = useState([]);
 
+    const [isLogged] = state.userAPI.isLogged;
+
     useEffect(() => {
         console.log('re render')
         if (params.id) {
@@ -36,10 +38,17 @@ function DetailProduct() {
                     <p>{detailProduct.description}</p>
                     <p>{detailProduct.content}</p>
                     <p>Sold: {detailProduct.sold}</p>
-                    <Link to="/cart" className="cart"
-                    onClick={() => addCart(detailProduct)}>
+                    { isLogged ?
+                        <Link to="/cart" className="cart"
+                        onClick={() => addCart(detailProduct)}>
                         Compre agora
-                    </Link>
+                        </Link>
+
+                    :   <Link to="/login" className="cart"
+                        onClick={() => addCart(detailProduct)}>
+                        Compre agora
+                        </Link>
+                    }
                 </div>
             </div>
             <div>

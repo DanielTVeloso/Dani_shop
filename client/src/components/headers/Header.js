@@ -52,7 +52,7 @@ function Header() {
 
             <div className="logo">
                 <h1>
-                    <Link to="/">{isAdmin ? 'Admin' : 'Shop do Dani'}</Link>
+                    <Link to="/">{isAdmin ? 'Admin' : 'Dani Shop'}</Link>
                 </h1>
             </div>
 
